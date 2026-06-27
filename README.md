@@ -33,9 +33,9 @@ There is a Makeile which makes the release folders that are ready to run on each
 ### May have to make my own LuaPlayer for these:
 
 - PlayStation (with PSn00bSDK?)
-- MegaDrive (maybe a *very* slimmed down LuaPlayer can be made with Marsdev/SGDK?)
 - Nintendo 64
 - GameCube 
+- MegaDrive (maybe a *very* slimmed down LuaPlayer can be made with Marsdev/SGDK?)
 - SNES via PVSnesLib
 
 ## TODO
