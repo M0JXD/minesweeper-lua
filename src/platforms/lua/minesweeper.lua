@@ -97,6 +97,7 @@ clear_screen()
 
 -- TODO: Detect winning scenario (probably should be told to us by logic)
 repeat
+	clear_screen()
 	io.write('  Lua Minesweeper\n\n')
 	local fail = plot_cells(columns, rows, board)
 	if fail then
@@ -111,13 +112,11 @@ repeat
 	elseif type == 'sweep' then
 		board, win = swpr.sweep_cell(mv_x, mv_y)
 	end
-
-	clear_screen()
 until type == 'q' or win
 
 if win then
-	io.write('You won! :)\n ')
+	io.write('\nYou won! :)\n ')
 else
-	io.write('Quitting Lua Minesweeper, goodbye!\n ')
+	io.write('\nQuitting Lua Minesweeper, goodbye!\n ')
 end
 
