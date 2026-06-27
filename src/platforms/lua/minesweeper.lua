@@ -1,5 +1,4 @@
 -- Lua Minesweeper for the Lua platform
--- TODO: Utilise Terminal colours?
 
 local swpr = require('logic')
 local colors = require('ansicolors')
