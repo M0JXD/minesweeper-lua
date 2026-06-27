@@ -1,17 +1,23 @@
 -- Lua Minesweeper for the Lua platform
+-- TODO: Utilise Terminal colours?
 
 local swpr = require('logic')
 local markers = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ$%&!'
 
 local function clear_screen()
-	local clear_cmd = package.config:sub(1,1) == '/' and 'clear' or 'cls'
+	local clear_cmd = package.config:sub(1, 1) == '/' and 'clear' or 'cls'
 	os.execute(clear_cmd)
 end
 
+-- TODO: Stop this failing and crashing on invalid inputs
 function interpret_move(move)
 	local x, y, type
 	if move == 'q' or move == 'quit' then type = 'q' end
-	if move:find('#') then type = 'flag' else type = 'sweep' end
+	if move:find('#') then
+		type = 'flag'
+	else
+		type = 'sweep'
+	end
 	x = markers:find(move:match('%a'))
 	y = tonumber(move:match('%d'))
 	return x, y, type
@@ -20,18 +26,16 @@ end
 local function plot_cells(x, y, board)
 	local fail = false
 	local top_ref = y > 9 and '  ' or ' '
-	for i=1, x do
-		top_ref = top_ref .. ' ' .. markers:sub(i, i)
-	end
+	for i = 1, x do top_ref = top_ref .. ' ' .. markers:sub(i, i) end
 	io.write(top_ref .. '\n')
 
-	for i=1, y do
+	for i = 1, y do
 		local row = ((i < 10 and y > 9) and ' ' or '') .. i .. ' '
-		for k=1, x do
+		for k = 1, x do
 			if board[k][i] == nil then
 				row = row .. '# '
 			elseif board[k][i] == 0 then
-				row = row ..'. '
+				row = row .. '. '
 			elseif board[k][i] == 'M' then
 				fail = true
 				row = row .. '* '
@@ -64,7 +68,8 @@ repeat
 		print('expert (e)       - Start an expert game.')
 		print('quit (h)         - Quit Lua Minesweeper.')
 		print('help (h)         - Show this help text.')
-		print('To play the game, enter coordinates starting with the (X axis) letter, e.g. "H7" or "!16".')
+		print(
+			'To play the game, enter coordinates starting with the (X axis) letter, e.g. "H7" or "!16".')
 		print('To place a flag, prefix the coordinate with a # symbol, e.g. "#H7" or "#!16"')
 		io.write('\nChoose an option: ')
 	else
@@ -78,16 +83,17 @@ local columns, rows, board = swpr.get_details(mode)
 plot_cells(columns, rows, board)
 io.write('\nEnter your first move: ')
 local mv_x, mv_y, type = interpret_move(io.read())
-	if type == 'flag' then
-		board = swpr.toggle_flag(mv_x, mv_y)
-	elseif type == 'sweep' then
-		board = swpr.setup_game(mv_x, mv_y, mode)
-	end
+if type == 'flag' then
+	board = swpr.toggle_flag(mv_x, mv_y)
+elseif type == 'sweep' then
+	board = swpr.setup_game(mv_x, mv_y, mode)
+end
 
 if type == 'q' or type == 'quit' then os.exit() end
 
 clear_screen()
 
+-- TODO: Detect winning scenario (probably should be told to us by logic)
 repeat
 	io.write('  Lua Minesweeper\n\n')
 	local fail = plot_cells(columns, rows, board)

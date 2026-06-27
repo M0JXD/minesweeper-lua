@@ -65,13 +65,16 @@ function M.setup_game(mv_x, mv_y, mode)
 	local mines = (mode == 'beginner' or mode == 'b') and 10 or
 		(mode == 'intermediate' or mode == 'i') and 40 or 99
 
-	for i=1, rows do board[i] = {} end
+	for i = 1, rows do board[i] = {} end
 
 	local amount = 0
 	math.randomseed(os.time())
 	while true do
 		local x = math.random(1, columns)
 		local y = math.random(1, rows)
+
+		-- TODO: Would be nice to avoid placing any near the first click
+-- So a bit of a sweep can happen on the first go which is more informative for the player
 		if not board[x][y] or not x == mv_x or not y == mv_y then
 			board[x][y] = 'M'
 			amount = amount + 1
@@ -152,8 +155,8 @@ end
 -- Returns the board for plotting by losing mine data
 function M.get_board(hit_mine)
 	local col, row, simple_board = M.get_details(board.mode)
-	for i=1, row do
-		for k=1, col do
+	for i = 1, row do
+		for k = 1, col do
 			print(k, i)
 			if board[k][i] == 'FM' or board[k][i] == 'F' then
 				simple_board[k][i] = 'F'
