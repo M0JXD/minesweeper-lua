@@ -102,8 +102,8 @@ function M.setup_game(mv_x, mv_y, mode)
 	board.mode = mode
 	board.columns = columns
 	board.row = rows
-	M.sweep_cell(mv_x, mv_y)
-	return M.get_board(false)
+
+	return M.sweep_cell(mv_x, mv_y)
 end
 
 -- Toggles flag on a cell
@@ -172,10 +172,13 @@ end
 
 -- Returns the board for plotting by losing mine data
 function M.get_board(hit_mine)
+	local win = detect_win()
 	local col, row, simple_board = M.get_details(board.mode)
 	for i = 1, row do
 		for k = 1, col do
-			if board[k][i] == 'FM' or board[k][i] == 'F' then
+			if win and (board[k][i] == 'FM' or board[k][i] == 'M') then
+				simple_board[k][i] = 'M'
+			elseif board[k][i] == 'FM' or board[k][i] == 'F' then
 				simple_board[k][i] = 'F'
 			elseif hit_mine and (board[k][i] == 'M' or simple_board[k][i] == 'F') then
 				simple_board[k][i] = 'M'
@@ -186,7 +189,7 @@ function M.get_board(hit_mine)
 			end
 		end
 	end
-	return simple_board, detect_win()
+	return simple_board, win
 end
 
 return M
