@@ -2,6 +2,7 @@
 
 -- Copyright (c) 2009 Rob Hoelz <rob@hoelzro.net>
 -- Copyright (c) 2011 Enrique García Cota <enrique.garcia.cota@gmail.com>
+-- Copyright (c) 2026 Jamie Drinkell <jamiedrinkell@gmail.com>
 --
 -- Permission is hereby granted, free of charge, to any person obtaining a copy
 -- of this software and associated documentation files (the "Software"), to deal

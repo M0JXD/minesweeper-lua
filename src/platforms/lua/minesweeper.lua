@@ -46,13 +46,13 @@ local function plot_cells(x, y, board)
 			elseif board[k][i] == 3 then
 				row = row .. colors('%{yellow}3') .. ' '
 			elseif board[k][i] == 4 then
-				row = row .. colors('%{blue}4') .. ' '
+				row = row .. colors('%{magenta}4') .. ' '
 			elseif board[k][i] == 5 then
 				row = row .. colors('%{red}5') .. ' '
 			elseif board[k][i] == 6 then
 				row = row .. colors('%{cyan}6') .. ' '
 			elseif board[k][i] == 7 then
-				row = row .. colors('%{magenta}7') .. ' '
+				row = row .. colors('%{dim magenta}7') .. ' '
 			elseif board[k][i] == 8 then
 				row = row .. colors('%{dim white}8') .. ' '
 			elseif board[k][i] == 'F' then
@@ -100,7 +100,7 @@ local columns, rows, board = swpr.get_details(mode)
 plot_cells(columns, rows, board)
 
 io.write('\nEnter your first move: ')
-local valid = false
+local valid, win = false, false
 repeat
 	local mv_x, mv_y, type = interpret_move(io.read())
 	if type == 'sweep' then
@@ -113,10 +113,7 @@ repeat
 		io.write('Invalid input! Try again: ')
 	end
 until valid
-
 if type == 'q' or type == 'quit' then os.exit() end
-local win
-
 clear_screen()
 
 repeat
@@ -153,4 +150,3 @@ if win then
 else
 	io.write('\nQuitting Lua Minesweeper, goodbye!\n ')
 end
-
