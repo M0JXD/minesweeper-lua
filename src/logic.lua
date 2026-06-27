@@ -51,6 +51,23 @@ board.rows = 8
 
 -- Functions --
 
+local function detect_win()
+	for i = 1, board.rows do
+		for k = 1, board.columns do
+			-- If any cell is nil or incorrectly flagged then it can't be so
+			if board[k][i] == nil or board[k][i] == 'F' then return false end
+		end
+	end
+	-- If we get here every cell must be revealed, a number, or a mine
+	-- i.e. winning scenario
+	return true
+end
+
+local function check_mine(x, y)
+	if board[x][y] == 'M' or board[x][y] == 'FM' then return true end
+	return false
+end
+
 function M.get_details(mode)
 	local rows = (mode == 'beginner' or mode == 'b') and 8 or 16
 	local columns = (mode == 'expert' or mode == 'e') and 30 or rows
@@ -74,8 +91,9 @@ function M.setup_game(mv_x, mv_y, mode)
 		local y = math.random(1, rows)
 
 		-- TODO: Would be nice to avoid placing any near the first click
--- So a bit of a sweep can happen on the first go which is more informative for the player
-		if not board[x][y] or not x == mv_x or not y == mv_y then
+		-- So a bit of a sweep can happen on the first go
+		-- which is more informative for the player
+		if board[x][y] == nil and not (x == mv_x and y == mv_y) then
 			board[x][y] = 'M'
 			amount = amount + 1
 		end
@@ -111,21 +129,21 @@ function M.sweep_cell(x, y)
 		-- LuaFormatter off
 		-- Check if any surrounding mines
 		-- North-West
-		if x-1 > 0 and y-1 > 0 then if board[x-1][y-1] == 'M' then count = count + 1 end end
+		if x-1 > 0 and y-1 > 0 then if check_mine(x-1,y-1) then count = count + 1 end end
 		-- North
-		if y-1 > 0 then if board[x][y-1] == 'M' then count = count + 1 end end
+		if y-1 > 0 then if check_mine(x,y-1) then count = count + 1 end end
 		-- North-East
-		if x+1 <= board.columns and y-1 > 0 then if board[x+1][y-1] == 'M' then count = count + 1 end end
+		if x+1 <= board.columns and y-1 > 0 then if check_mine(x+1,y-1) then count = count + 1 end end
 		-- East
-		if x+1 <= board.columns then if board[x+1][y] == 'M' then count = count + 1 end end
+		if x+1 <= board.columns then if check_mine(x+1,y) then count = count + 1 end end
 		-- South-East
-		if x+1 <= board.columns  and y+1 <= board.rows then if board[x+1][y+1] == 'M' then count = count + 1 end end
+		if x+1 <= board.columns and y+1 <= board.rows then if check_mine(x+1,y+1) then count = count + 1 end end
 		-- South
-		if y+1 <= board.rows then if board[x][y+1] == 'M' then count = count + 1 end end
+		if y+1 <= board.rows then if check_mine(x,y+1) then count = count + 1 end end
 		-- South-West
-		if x-1 > 0 and y+1 <= board.rows then if board[x-1][y+1] == 'M' then count = count + 1 end end
+		if x-1 > 0 and y+1 <= board.rows then if check_mine(x-1,y+1) then count = count + 1 end end
 		-- West
-		if x-1 > 0 then if board[x-1][y] == 'M' then count = count + 1 end end
+		if x-1 > 0 then if check_mine(x-1,y) then count = count + 1 end end
 
 		board[x][y] = count
 		-- If none, call the next ones to be revealed...
@@ -137,11 +155,11 @@ function M.sweep_cell(x, y)
 			-- North-East
 			if x+1 <= board.columns and y-1 > 0 then M.sweep_cell(x+1, y-1) end
 			-- East
-			if x+1 <= board.columns then M.sweep_cell(x+1,y) end
+			if x+1 <= board.columns then M.sweep_cell(x+1, y) end
 			-- South-East
-			if x+1 <= board.columns  and y+1 <= board.rows then M.sweep_cell(x+1, y+1) end
+			if x+1 <= board.columns and y+1 <= board.rows then M.sweep_cell(x+1, y+1) end
 			-- South
-			if y+1 <= board.rows then M.sweep_cell(x,y+1) end
+			if y+1 <= board.rows then M.sweep_cell(x, y+1) end
 			-- South-West
 			if x-1 > 0 and y+1 <= board.rows then M.sweep_cell(x-1, y+1) end
 			-- West
@@ -157,10 +175,9 @@ function M.get_board(hit_mine)
 	local col, row, simple_board = M.get_details(board.mode)
 	for i = 1, row do
 		for k = 1, col do
-			print(k, i)
 			if board[k][i] == 'FM' or board[k][i] == 'F' then
 				simple_board[k][i] = 'F'
-			elseif hit_mine and board[k][i] == 'M' then
+			elseif hit_mine and (board[k][i] == 'M' or simple_board[k][i] == 'F') then
 				simple_board[k][i] = 'M'
 			elseif not hit_mine and board[k][i] == 'M' then
 				simple_board[k][i] = nil
@@ -169,7 +186,7 @@ function M.get_board(hit_mine)
 			end
 		end
 	end
-	return simple_board
+	return simple_board, detect_win()
 end
 
 return M
