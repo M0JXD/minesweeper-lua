@@ -9,7 +9,6 @@ local function clear_screen()
 	os.execute(clear_cmd)
 end
 
--- TODO: Stop this failing and crashing on invalid inputs
 function interpret_move(move)
 	local x, y, type
 	if move == 'q' or move == 'quit' then type = 'q' end
@@ -20,6 +19,8 @@ function interpret_move(move)
 	end
 	x = markers:find(move:match('%a'):upper())
 	y = tonumber(move:match('%d'))
+
+	if x == nil or y == nil then type = 'bad' end
 	return x, y, type
 end
 
@@ -82,13 +83,21 @@ until false
 io.write("Starting a game of Minesweeper!\n\n")
 local columns, rows, board = swpr.get_details(mode)
 plot_cells(columns, rows, board)
+
 io.write('\nEnter your first move: ')
-local mv_x, mv_y, type = interpret_move(io.read())
-if type == 'flag' then
-	board = swpr.toggle_flag(mv_x, mv_y)
-elseif type == 'sweep' then
-	board = swpr.setup_game(mv_x, mv_y, mode)
-end
+local valid = false
+repeat
+	local mv_x, mv_y, type = interpret_move(io.read())
+	if type == 'flag' then
+		board = swpr.toggle_flag(mv_x, mv_y)
+		valid = true
+	elseif type == 'sweep' then
+		board = swpr.setup_game(mv_x, mv_y, mode)
+		valid = true
+	else
+		io.write('Invalid input! Try again: ')
+	end
+until valid
 
 if type == 'q' or type == 'quit' then os.exit() end
 local win
@@ -106,12 +115,19 @@ repeat
 	end
 
 	io.write('\nEnter your next move: ')
-	mv_x, mv_y, type = interpret_move(io.read())
-	if type == 'flag' then
-		board, win = swpr.toggle_flag(mv_x, mv_y)
-	elseif type == 'sweep' then
-		board, win = swpr.sweep_cell(mv_x, mv_y)
-	end
+	local valid = false
+	repeat
+		mv_x, mv_y, type = interpret_move(io.read())
+		if type == 'flag' then
+			board, win = swpr.toggle_flag(mv_x, mv_y)
+			valid = true
+		elseif type == 'sweep' then
+			board, win = swpr.sweep_cell(mv_x, mv_y)
+			valid = true
+		else
+			io.write('Invalid input! Try again: ')
+		end
+	until valid
 until type == 'q' or win
 
 if win then
