@@ -17,7 +17,7 @@ function interpret_move(move)
 		type = 'sweep'
 	end
 	x = markers:find(move:match('%a'):upper())
-	y = tonumber(move:match('%d'))
+	y = tonumber(move:match('%d+'))
 	if x == nil or y == nil then type = 'bad' end
 	if move == 'q' or move == 'quit' then type = 'q' end
 	return x, y, type
