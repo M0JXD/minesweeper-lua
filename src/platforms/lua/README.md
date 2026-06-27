@@ -17,17 +17,16 @@ Beginner mode looks like this:
   Lua Minesweeper
 
   A B C D E F G H
-1 . . . . . . 1 #
+1 . . . . . . 1 F
 2 1 1 1 . . . 1 1
 3 # # 2 1 1 . . .
-4 # # # # 1 . . .
+4 # # # F 1 . . .
 5 # # # # 2 . 1 1
-6 # # # # 2 1 2 #
+6 # # # # 2 1 2 F
 7 # # # # # # # #
 8 # # # # # # # #
 
 Enter your next move:
-
 ```
 
 Where:
