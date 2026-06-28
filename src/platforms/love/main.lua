@@ -6,12 +6,15 @@ Beginner: 64px
 Intermediate: 32px
 Expert: ~16px
 
---]] local swpr = require('logic')
+--]]
+
+local swpr = require('logic')
 local cell_imgs
-local columns, rows = 8, 8
-local size, mode, scale = 64, 'b'
+local mode, size, scale = 'b', 64
+local columns, rows, board = swpr.get_details(mode)
 
 function love.load()
+	love.window.setTitle('Lua Minesweeper - LÖVE Platform')
 	success = love.window.setMode(512, 640)
 	cell_imgs = love.graphics.newArrayImage{
 		-- LuaFormatter off
@@ -26,6 +29,8 @@ function love.load()
 		"assets/8.png",
 		"assets/hidden.png",
 		"assets/flag.png",
+		"assets/hidden_hover.png",
+		"assets/flag_hover.png",
 		"assets/mine.png"
 		-- LuaFormatter on
 	}
