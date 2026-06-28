@@ -11,7 +11,7 @@ Expert: ~16px
 local swpr = require('logic')
 local cell_imgs, start_menu, arrow
 local mode, size, scale = 0, 64
-local columns, rows, board, situation
+local columns, rows, board, situation, hover_x, hover_y
 
 local function draw_menu()
 	love.graphics.draw(start_menu)
@@ -21,21 +21,26 @@ end
 local function draw_game()
 	for i = 0, rows - 1 do
 		for k = 0, columns - 1 do
-			if board[i+1][k+1] == nil then
+			if hover_x == i + 1 and hover_y == k + 1 and board[i + 1][k + 1] == nil then
+				love.graphics.drawLayer(cell_imgs, 12, (i * size), 640 - (size * rows) + (k * size),
+					0, scale, scale)
+			elseif hover_x == i + 1 and hover_y == k + 1 and board[i + 1][k + 1] == 'F' then
+				love.graphics.drawLayer(cell_imgs, 13, (i * size), 640 - (size * rows) + (k * size),
+					0, scale, scale)
+			elseif board[i + 1][k + 1] == nil then
 				love.graphics.drawLayer(cell_imgs, 10, (i * size), 640 - (size * rows) + (k * size),
 					0, scale, scale)
-			elseif board[i+1][k+1] == 'M' then
+			elseif board[i + 1][k + 1] == 'M' then
 				if situation ~= 'win' then situation = 'lost' end
 				love.graphics.drawLayer(cell_imgs, 14, (i * size), 640 - (size * rows) + (k * size),
 					0, scale, scale)
-			elseif board[i+1][k+1] == 'F' then
+			elseif board[i + 1][k + 1] == 'F' then
 				love.graphics.drawLayer(cell_imgs, 11, (i * size), 640 - (size * rows) + (k * size),
 					0, scale, scale)
 			else
-				love.graphics.drawLayer(cell_imgs, board[i+1][k+1] + 1, (i * size),
+				love.graphics.drawLayer(cell_imgs, board[i + 1][k + 1] + 1, (i * size),
 					640 - (size * rows) + (k * size), 0, scale, scale)
 			end
-
 		end
 	end
 end
@@ -58,7 +63,7 @@ function menu_mousepressed(x, y, button, istouch, presses)
 	else
 		mode = 'e'
 	end
-	size = mode == 'b' and 64 or mode == 'i' and 32 or 16
+	size = mode == 'b' and 64 or mode == 'i' and 32 or 17.666
 	scale = size / 320
 	situation = 'new'
 	columns, rows, board = swpr.get_details(mode)
@@ -68,11 +73,15 @@ function menu_mousepressed(x, y, button, istouch, presses)
 end
 
 function game_mousemoved(x, y, dx, dy, istouch)
+	if situation == 'lost' or situation == true or y < 640 - (size * rows) then return end
 
+	-- Convert x/y to grid
+	hover_x = math.floor(x / size) + 1
+	hover_y = math.floor((y - (640 - (size * rows))) / size) + 1
 end
 
 function game_mousepressed(x, y, button, istouch, presses)
-	if y < 640 - (size * rows) then return end
+	if situation == 'lost' or situation == true or y < 640 - (size * rows) then return end
 
 	-- Convert x/y to grid
 	local grid_x = math.floor(x / size) + 1
@@ -85,9 +94,7 @@ function game_mousepressed(x, y, button, istouch, presses)
 			board, situation = swpr.sweep_cell(grid_x, grid_y)
 		end
 	elseif button == 2 then
-		if situation ~= 'new' then
-			board, situation = swpr.toggle_flag(grid_x, grid_y)
-		end
+		if situation ~= 'new' then board, situation = swpr.toggle_flag(grid_x, grid_y) end
 	end
 end
 
