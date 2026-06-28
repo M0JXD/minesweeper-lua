@@ -38,6 +38,8 @@ function menu_mousepressed(x, y, button, istouch, presses)
 	elseif y < 540 then mode = 'i'
 	else mode = 'e' end
 	columns, rows, board = swpr.get_details(mode)
+	size = mode == 'b' and 64 or mode == 'i' and 32 or 16
+	scale = size / 320
 	love.draw = draw_game
 	love.mousemoved = game_mousemoved
 	love.mousepressed = game_mousepressed
@@ -81,8 +83,3 @@ function love.load()
 end
 
 love.draw = draw_menu
-
-function love.update()
-	size = mode == 'b' and 64 or mode == 'i' and 32 or 16
-	scale = size / 320
-end
