@@ -108,6 +108,7 @@ end
 
 -- Toggles flag on a cell
 function M.toggle_flag(x, y)
+	if type(board[x][y]) == 'number' then return M.get_board(false) end
 	if board[x][y] == 'M' then
 		board[x][y] = 'FM'
 	elseif board[x][y] == 'F' then
