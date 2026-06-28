@@ -82,7 +82,7 @@ function M.setup_game(mv_x, mv_y, mode)
 	local mines = (mode == 'beginner' or mode == 'b') and 10 or
 		(mode == 'intermediate' or mode == 'i') and 40 or 99
 
-	for i = 1, rows do board[i] = {} end
+	for i = 1, columns do board[i] = {} end
 
 	local amount = 0
 	math.randomseed(os.time())
