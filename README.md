@@ -5,10 +5,10 @@ This is my attempt at using Lua to make the classic game Minesweeper for as many
 ## Platforms
 
 - Plain Lua via CLI
+- Desktop/Mobile via LÖVE
 
 ### Intended Platforms
 
-- Desktop/Mobile via LÖVE
 - PS2 via Enceladus
 - Wii via LuafWii or Wiilove
 - Textadept
