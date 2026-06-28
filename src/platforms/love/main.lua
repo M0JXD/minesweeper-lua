@@ -19,28 +19,26 @@ local function draw_menu()
 end
 
 local function draw_game()
+	local image
 	for i = 0, rows - 1 do
 		for k = 0, columns - 1 do
 			if hover_x == i + 1 and hover_y == k + 1 and board[i + 1][k + 1] == nil then
-				love.graphics.drawLayer(cell_imgs, 12, (i * size), 640 - (size * rows) + (k * size),
-					0, scale, scale)
+				image = 12
 			elseif hover_x == i + 1 and hover_y == k + 1 and board[i + 1][k + 1] == 'F' then
-				love.graphics.drawLayer(cell_imgs, 13, (i * size), 640 - (size * rows) + (k * size),
-					0, scale, scale)
+				image = 13
 			elseif board[i + 1][k + 1] == nil then
-				love.graphics.drawLayer(cell_imgs, 10, (i * size), 640 - (size * rows) + (k * size),
-					0, scale, scale)
+				image = 10
 			elseif board[i + 1][k + 1] == 'M' then
+				image = 14
 				if situation ~= 'win' then situation = 'lost' end
-				love.graphics.drawLayer(cell_imgs, 14, (i * size), 640 - (size * rows) + (k * size),
-					0, scale, scale)
 			elseif board[i + 1][k + 1] == 'F' then
-				love.graphics.drawLayer(cell_imgs, 11, (i * size), 640 - (size * rows) + (k * size),
-					0, scale, scale)
+				image = 11
 			else
-				love.graphics.drawLayer(cell_imgs, board[i + 1][k + 1] + 1, (i * size),
-					640 - (size * rows) + (k * size), 0, scale, scale)
+				image = board[i + 1][k + 1] + 1
 			end
+			love.graphics.drawLayer(cell_imgs, image, (i * size), 640 - (size * rows) + (k * size),
+				0, scale, scale)
+
 		end
 	end
 end
