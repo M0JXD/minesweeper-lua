@@ -16,7 +16,7 @@ function interpret_move(move)
 	else
 		type = 'sweep'
 	end
-	x = markers:find(move:match('%a'):upper())
+	x = markers:find(move:match('[&!%a$%%]'):upper(), 1 ,true)
 	y = tonumber(move:match('%d+'))
 	if x == nil or y == nil then type = 'bad' end
 	if move == 'q' or move == 'quit' then type = 'q' end
