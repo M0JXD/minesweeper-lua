@@ -4,7 +4,7 @@ The game's 'native' resolution is 512*640, which makes cell sizes:
 
 Beginner: 64px
 Intermediate: 32px
-Expert: ~16px
+Expert: ~17.66px
 
 --]]
 
