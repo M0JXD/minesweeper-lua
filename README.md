@@ -7,10 +7,10 @@ It is a work in progress!
 
 - Plain Lua via CLI
 - Desktop/Mobile via LÖVE
+- PlayStation 2 via Enceladus
 
 ### Intended Platforms
 
-- PS2 via Enceladus
 - Wii via LuafWii or Wiilove
 - Textadept
 - TBD...
