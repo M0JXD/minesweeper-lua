@@ -65,7 +65,7 @@ function menu_mousepressed(x, y, button, istouch, presses)
 	end
 	size = mode == 'b' and 48 or mode == 'i' and 24 or 20
 	scale = mode == 'b' and 1 or mode == 'i' and 0.5 or 0.4166
-	situation = 'new'
+	situation = 'start'
 	columns, rows, board = swpr.get_details(mode)
 	love.draw = draw_game
 	love.mousemoved = game_mousemoved
@@ -86,13 +86,13 @@ function game_mousepressed(x, y, button, istouch, presses)
 	local grid_y = math.floor((y - (448 - (size * rows))) / size) + 1
 
 	if button == 1 then
-		if situation == 'new' then
+		if situation == 'start' then
 			board, situation = swpr.setup_game(grid_x, grid_y, mode)
 		else
 			board, situation = swpr.sweep_cell(grid_x, grid_y)
 		end
 	elseif button == 2 then
-		if situation ~= 'new' then board, situation = swpr.toggle_flag(grid_x, grid_y) end
+		if situation ~= 'start' then board, situation = swpr.toggle_flag(grid_x, grid_y) end
 	end
 end
 
