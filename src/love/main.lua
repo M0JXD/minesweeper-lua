@@ -1,27 +1,27 @@
 --[[ Lua Minesweeper - LÖVE Platform
 
-The game's 'native' resolution is 512*640, which makes cell sizes:
--- TODO: Convert landscape resolution to 640x448 so all platforms are the same,
--- then also adapt to mobile with 640x960
+The game's 'native' resolution is 640x448, which makes cell sizes:
+-- Adapt to mobile with 640x960
 
-Beginner: 64px
-Intermediate: 32px
-Expert: ~17.66px
+Beginner: 48px
+Intermediate: 24px
+Expert: 20px
 
 --]]
 
 local swpr = require('logic')
 local cell_imgs, start_menu, arrow
-local mode, size, scale = 0, 64
+local mode, size, scale = 0, 48
 local columns, rows, board, situation, hover_x, hover_y
 
 local function draw_menu()
 	love.graphics.draw(start_menu)
-	love.graphics.draw(arrow, 110, 340 + mode)
+	love.graphics.draw(arrow, 165, 148 + mode)
 end
 
 local function draw_game()
 	local image
+	local centering = (640 - (columns * size)) / 2
 	for k = 0, rows - 1 do
 		for i = 0, columns - 1 do
 			if hover_x == i + 1 and hover_y == k + 1 and board[i + 1][k + 1] == nil then
@@ -38,7 +38,7 @@ local function draw_game()
 			else
 				image = board[i + 1][k + 1] + 1
 			end
-			love.graphics.drawLayer(cell_imgs, image, (i * size), 640 - (size * rows) + (k * size),
+			love.graphics.drawLayer(cell_imgs, image, centering + (i * size), 448 - (size * rows) + (k * size),
 				0, scale, scale)
 
 		end
@@ -46,9 +46,9 @@ local function draw_game()
 end
 
 function menu_mousemoved(x, y, dx, dy, istouch)
-	if y < 420 then
+	if y < 230 then
 		mode = 0
-	elseif y < 540 then
+	elseif y < 330 then
 		mode = 105
 	else
 		mode = 205
@@ -56,15 +56,15 @@ function menu_mousemoved(x, y, dx, dy, istouch)
 end
 
 function menu_mousepressed(x, y, button, istouch, presses)
-	if y < 420 then
+	if y < 230 then
 		mode = 'b'
-	elseif y < 540 then
+	elseif y < 330 then
 		mode = 'i'
 	else
 		mode = 'e'
 	end
-	size = mode == 'b' and 64 or mode == 'i' and 32 or 17.666
-	scale = size / 320
+	size = mode == 'b' and 48 or mode == 'i' and 24 or 20
+	scale = mode == 'b' and 1 or mode == 'i' and 0.5 or 0.4166
 	situation = 'new'
 	columns, rows, board = swpr.get_details(mode)
 	love.draw = draw_game
@@ -73,15 +73,17 @@ function menu_mousepressed(x, y, button, istouch, presses)
 end
 
 function game_mousemoved(x, y, dx, dy, istouch)
-	if situation == 'lost' or situation == true or y < 640 - (size * rows) then return end
-	hover_x = math.floor(x / size) + 1
-	hover_y = math.floor((y - (640 - (size * rows))) / size) + 1
+	if situation == 'lost' or situation == true or y < 448 - (size * rows) then return end
+	local centering = (640 - (columns * size)) / 2
+	hover_x = math.floor((x - centering) / size) + 1
+	hover_y = math.floor((y - (448 - (size * rows))) / size) + 1
 end
 
 function game_mousepressed(x, y, button, istouch, presses)
-	if situation == 'lost' or situation == true or y < 640 - (size * rows) then return end
-	local grid_x = math.floor(x / size) + 1
-	local grid_y = math.floor((y - (640 - (size * rows))) / size) + 1
+	if situation == 'lost' or situation == true or y < 448 - (size * rows) then return end
+	local centering = (640 - (columns * size)) / 2
+	local grid_x = math.floor((x - centering) / size) + 1
+	local grid_y = math.floor((y - (448 - (size * rows))) / size) + 1
 
 	if button == 1 then
 		if situation == 'new' then
@@ -99,7 +101,7 @@ love.mousepressed = menu_mousepressed
 
 function love.load()
 	love.window.setTitle('Lua Minesweeper - LÖVE Platform')
-	success = love.window.setMode(512, 640)
+	success = love.window.setMode(640, 448)
 
 	start_menu = love.graphics.newImage('assets/start_menu.png')
 	arrow = love.graphics.newImage('assets/arrow.png')
