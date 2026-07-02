@@ -14,7 +14,7 @@ build/ps2:
 	tar -xzf ./build/enceladus.tar.gz -C ./build && rm ./build/enceladus.tar.gz
 	mv ./build/Enceladus ./build/ps2
 	rm -r ./build/ps2/lua_intellisense ./build/ps2/mesh ./build/ps2/pads && rm ./build/ps2/enceladus.elf
-	echo "dofile(\"minesweeper/minesweeper.lua\")" > ./build/ps2/System/system.lua
+	echo "dofile('minesweeper/minesweeper.lua')" > ./build/ps2/System/system.lua
 
 build/ps2/minesweeper/minesweeper.lua: src/ps2/minesweeper.lua
 	mkdir -p build/ps2/minesweeper
